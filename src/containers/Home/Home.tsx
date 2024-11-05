@@ -34,9 +34,14 @@ const Home = () => {
     void fetchData();
     }, [fetchData]);
 
-  const onDelete = () => {
-
-  };
+  const onDelete = useCallback(async (id: string) => {
+    try {
+      await axiosAPI.delete(`meals/${id}.json`);
+      await fetchData();
+    } catch (e) {
+      console.error(e);
+    }
+  }, [fetchData]);
 
   return (
     <>
@@ -53,7 +58,7 @@ const Home = () => {
                 <div className="text-end">
                   <p className="fw-bold mb-1">{meal.calories} kcal</p>
                   <div>
-                    <button className="btn btn-danger btn-sm me-2" onClick={onDelete}>Delete</button>
+                    <button className="btn btn-danger btn-sm me-2" onClick={() => onDelete(meal.id)}>Delete</button>
                     <NavLink to={`/${meal.id}/edit`} className="btn btn-dark btn-sm">Edit</NavLink>
                   </div>
                 </div>
