@@ -2,6 +2,7 @@ import { categories } from '../../helpers/constants';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { INewMeal } from '../../types';
+import ButtonSpinner from '../UI/ButtonSpinner/ButtonSpinner';
 
 const initialState = {
   name: '',
@@ -12,9 +13,10 @@ const initialState = {
 interface Props {
   form?: INewMeal;
   submitForm: (meal: INewMeal) => void;
+  isLoading?: boolean;
 }
 
-const MealForm: React.FC<Props> = ({form, submitForm}) => {
+const MealForm: React.FC<Props> = ({form, submitForm, isLoading = false}) => {
   const [newMeal, setNewMeal] = useState<INewMeal>(initialState);
 
   useEffect(() => {
@@ -83,8 +85,9 @@ const MealForm: React.FC<Props> = ({form, submitForm}) => {
         />
       </div>
 
-      <button className="btn btn-dark">
-        {form ? 'Save Edits' : 'Save'}
+      <button disabled={isLoading} className="btn btn-dark d-flex align-items-center">
+        <span>{form ? 'Save Edits' : 'Save'}</span>
+        {isLoading ? <ButtonSpinner /> : null}
       </button>
     </form>
   );

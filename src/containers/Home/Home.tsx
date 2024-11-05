@@ -52,7 +52,7 @@ const Home = () => {
     <>
       {loading ? <Spinner/> :
         <>
-          <h2 className='text-end mb-3'>Total calories: {totalCalories}</h2>
+          <h2 className='text-end mb-3'>Total calories: {totalCalories} kcal</h2>
           {meal.map((meal) => (
             <div key={meal.id} className="card mb-3 p-3 shadow-sm border-0">
               <div className="d-flex justify-content-between align-items-center">
