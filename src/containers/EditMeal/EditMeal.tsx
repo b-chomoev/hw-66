@@ -3,17 +3,26 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useCallback, useEffect, useState } from 'react';
 import { IMeal, INewMeal } from '../../types';
 import axiosAPI from '../../axiosAPI';
+import Spinner from '../../components/UI/Spinner/Spinner';
 
 const EditMeal = () => {
   const [meal, setMeal] = useState<IMeal>();
+  const [loading, setLoading] = useState(false);
   const params = useParams<{id: string}>();
   const navigate = useNavigate();
 
   const fetchData = useCallback(async (id: string) => {
-    const response: {data: IMeal} = await axiosAPI<IMeal>(`meals/${id}.json`);
+    try {
+      setLoading(true);
+      const response: {data: IMeal} = await axiosAPI<IMeal>(`meals/${id}.json`);
 
-    if (response.data) {
-      setMeal(response.data);
+      if (response.data) {
+        setMeal(response.data);
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoading(false);
     }
   }, []);
 
@@ -26,17 +35,30 @@ const EditMeal = () => {
   const submitForm = async (submitMeal: INewMeal) => {
     try {
       if (params.id) {
+        setLoading(true);
         await axiosAPI.put(`/meals/${params.id}.json`, {...submitMeal});
         navigate('/');
       }
     } catch (e) {
       console.error(e);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <>
-      <MealForm form={meal} submitForm={submitForm}/>
+      {loading ? <Spinner/> :
+        <>
+          {meal ?
+            <>
+              <MealForm form={meal} submitForm={submitForm}/>
+            </>
+            :
+            null
+          }
+        </>
+      }
     </>
   );
 };

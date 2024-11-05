@@ -2,7 +2,6 @@ import { categories } from '../../helpers/constants';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { INewMeal } from '../../types';
-import { useNavigate } from 'react-router-dom';
 
 const initialState = {
   name: '',
@@ -17,7 +16,6 @@ interface Props {
 
 const MealForm: React.FC<Props> = ({form, submitForm}) => {
   const [newMeal, setNewMeal] = useState<INewMeal>(initialState);
-  const navigate = useNavigate();
 
   useEffect(() => {
     if (form) {
@@ -36,7 +34,6 @@ const MealForm: React.FC<Props> = ({form, submitForm}) => {
     if (!form) {
       setNewMeal(initialState);
     }
-    navigate('/');
   };
 
   const onChangeField = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
