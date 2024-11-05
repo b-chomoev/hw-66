@@ -1,8 +1,8 @@
 import { categories } from '../../helpers/constants';
 import * as React from 'react';
-import { useState } from 'react';
-import { IMeal } from '../../types';
-import axiosAPI from '../../axiosAPI';
+import { useEffect, useState } from 'react';
+import { INewMeal } from '../../types';
+import { useNavigate } from 'react-router-dom';
 
 const initialState = {
   name: '',
@@ -10,15 +10,33 @@ const initialState = {
   calories: 0,
 };
 
-const MealForm = () => {
-  const [newMeal, setNewMeal] = useState<IMeal>(initialState);
+interface Props {
+  form?: INewMeal;
+  submitForm: (meal: INewMeal) => void;
+}
+
+const MealForm: React.FC<Props> = ({form, submitForm}) => {
+  const [newMeal, setNewMeal] = useState<INewMeal>(initialState);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (form) {
+      setNewMeal(prevState => ({
+        ...prevState,
+        ...form,
+      }));
+    }
+  }, [form]);
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    await axiosAPI.post('meals.json', {...newMeal});
+    submitForm({...newMeal});
 
-    setNewMeal(initialState);
+    if (!form) {
+      setNewMeal(initialState);
+    }
+    navigate('/');
   };
 
   const onChangeField = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -30,10 +48,10 @@ const MealForm = () => {
 
   return (
     <form onSubmit={onSubmit}>
-      <h3>Add new meal</h3>
+      <h3> {form ? 'Edit' : 'Add new '} meal</h3>
       <div className="form-group mb-2">
         <label htmlFor="name">Meal Name:</label>
-        <select className="form-select mt-2" name='name' onChange={onChangeField} value={newMeal.name}>
+        <select className="form-select mt-2" name="name" onChange={onChangeField} value={newMeal.name}>
           <option>Open this select menu</option>
           {categories.map((category) =>
             <option key={category.value} value={category.value}>
@@ -68,7 +86,9 @@ const MealForm = () => {
         />
       </div>
 
-      <button className="btn btn-dark">Save</button>
+      <button className="btn btn-dark">
+        {form ? 'Save Edits' : 'Save'}
+      </button>
     </form>
   );
 };
