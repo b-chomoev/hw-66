@@ -43,11 +43,16 @@ const Home = () => {
     }
   }, [fetchData]);
 
+  const totalCalories = meal.reduce((acc, meal) => {
+    acc += Number(meal.calories);
+    return acc;
+  }, 0);
+
   return (
     <>
       {loading ? <Spinner/> :
         <>
-          <h2 className='text-end mb-3'>Total calories: 0</h2>
+          <h2 className='text-end mb-3'>Total calories: {totalCalories}</h2>
           {meal.map((meal) => (
             <div key={meal.id} className="card mb-3 p-3 shadow-sm border-0">
               <div className="d-flex justify-content-between align-items-center">
